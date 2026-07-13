@@ -1,0 +1,5 @@
+.venv
+.env
+requirements.txt
+dataset
+01_postgres_staging.sql
