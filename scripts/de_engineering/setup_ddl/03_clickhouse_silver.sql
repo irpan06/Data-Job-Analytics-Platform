@@ -69,3 +69,11 @@ CREATE TABLE IF NOT EXISTS wh_silver.fact_job_postings(
 )
 ENGINE = MergeTree()
 ORDER BY (date_id, job_title_short);
+
+-- create brdige skill and job dim table
+CREATE TABLE IF NOT EXISTS wh_silver.dim_skill_job(
+    skill_id Int64,
+    job_id Int64
+)
+ENGINE = MergeTree()
+ORDER BY (skill_id, job_id);
