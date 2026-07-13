@@ -3,6 +3,7 @@ import pandas as pd
 
 # output dir
 output = '../../../dataset'
+os.makedirs(output, exist_ok=True)
 
 # dataset url
 url  = 'https://storage.googleapis.com/sql_de/job_postings_flat.csv'
