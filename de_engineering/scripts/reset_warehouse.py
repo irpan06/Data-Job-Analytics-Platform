@@ -33,7 +33,6 @@ ch_client = clickhouse_connect.get_client(
 )
 
 # run sql file
-
 def run_postgres(sql_file):
     print(f"Running {sql_file.name}")
     with pg_conn.cursor() as cur:
