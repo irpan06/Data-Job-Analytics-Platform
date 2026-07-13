@@ -1,4 +1,4 @@
--- create table 
+-- create table (POSTGRESQL)
 CREATE TABLE IF NOT EXISTS job_postings (
     job_title_short TEXT,
     job_title TEXT,

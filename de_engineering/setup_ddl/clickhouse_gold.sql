@@ -1,4 +1,4 @@
--- create database for gold layer
+-- create database for gold layer (CLICKHOUSE)
 CREATE DATABASE IF NOT EXISTS mart_gold;
 
 -- create aggregation salary by role table

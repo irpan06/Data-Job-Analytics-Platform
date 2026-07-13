@@ -1,4 +1,4 @@
--- create database for bronze layer 
+-- create database for bronze layer (CLICKHOUSE)
 CREATE DATABASE IF NOT EXISTS src_bronze;
 
 -- create table raw

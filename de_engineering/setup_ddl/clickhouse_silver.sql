@@ -1,4 +1,4 @@
--- create database for silver layer
+-- create database for silver layer (CLICKHOUSE)
 CREATE DATABASE IF NOT EXISTS wh_silver;
 
 -- create fact and dim table (star schema)
