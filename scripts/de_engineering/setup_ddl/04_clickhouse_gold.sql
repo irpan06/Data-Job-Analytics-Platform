@@ -23,3 +23,14 @@ CREATE TABLE IF NOT EXISTS mart_gold.agg_skill_demand_monthly(
 )
 ENGINE = MergeTree()
 ORDER BY (posted_year, posted_month, job_title_short, skill);
+
+-- create aggregation top paying skills table
+CREATE TABLE IF NOT EXISTS mart_gold.agg_top_paying_skills(
+    job_title_short String,
+    skill String,
+    avg_salary_year Float64,
+    total_indexed_jobs UInt64,
+    updated_at DateTime DEFAULT now()
+)
+ENGINE = MergeTree()
+ORDER BY (job_title_short, avg_salary_year DESC);
