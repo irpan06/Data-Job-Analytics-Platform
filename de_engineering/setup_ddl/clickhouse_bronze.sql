@@ -3,6 +3,7 @@ CREATE DATABASE IF NOT EXISTS src_bronze;
 
 -- create table raw
 CREATE TABLE IF NOT EXISTS src_bronze.raw_data(
+    job_hash UInt64,
     job_title_short String,
     job_title String,
     job_location String,
