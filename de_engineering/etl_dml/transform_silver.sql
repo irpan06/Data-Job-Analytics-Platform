@@ -49,3 +49,19 @@ SELECT
     skill
 FROM max_skill_id, skills
 WHERE skill NOT IN (SELECT skill FROM wh_silver.dim_skill);
+
+--'
+-- date dim table
+INSERT INTO wh_silver.dim_date
+SELECT DISTINCT
+    toYYYYMMDD(job_posted_date) AS date_id,
+    toDate(job_posted_date) AS full_date,
+    toDayOfMonth(job_posted_date) AS day,
+    toMonth(job_posted_date) AS month,
+    toQuarter(job_posted_date) AS quarter,
+    toYear(job_posted_date) AS year,
+    toWeek(job_posted_date) AS week_of_year,
+    toDayOfWeek(job_posted_date) AS day_of_week,
+    if(toDayOfWeek(job_posted_date) IN (6,7),1,0) AS is_weekend
+FROM src_bronze.raw_data
+WHERE job_posted_date IS NOT NULL;
