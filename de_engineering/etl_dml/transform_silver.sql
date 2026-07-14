@@ -95,3 +95,40 @@ WHERE b.job_hash NOT IN (
     SELECT job_hash
     FROM wh_silver.fact_job_postings
 );
+
+-- skill and job bridge dim table
+WITH
+    job_skill_pair AS(
+        SELECT job_hash,
+            trim(
+                arrayJoin(
+                    splitByChar(
+                        ',',
+                        replaceRegexpAll(job_skills, '[\\[\\]\']', '')
+                    )
+                )
+            ) AS skill
+        FROM src_bronze.raw_data
+        WHERE job_skills IS NOT NULL
+        AND job_skills != ''
+        AND job_skills != '[]'
+    ), --'
+    lookup_skill AS(
+        SELECT 
+            jsp.job_hash, d.skill_id 
+        FROM job_skill_pair jsp
+        LEFT JOIN wh_silver.dim_skill d
+        ON jsp.skill = d.skill
+    )
+
+INSERT INTO wh_silver.bridge_skill_job(
+    skill_id, job_id
+)
+SELECT DISTINCT
+    ls.skill_id, f.job_id
+FROM lookup_skill ls
+INNER JOIN wh_silver.fact_job_postings f
+ON ls.job_hash = f.job_hash
+WHERE (f.job_id, ls.skill_id) NOT IN (
+    SELECT job_id, skill_id FROM wh_silver.bridge_skill_job
+);
