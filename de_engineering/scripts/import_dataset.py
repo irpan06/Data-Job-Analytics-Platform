@@ -18,7 +18,7 @@ df[date_column] = pd.to_datetime(df[date_column])
 
 print('start spliting data ...')
 for month, group in df.groupby(df[date_column].dt.month):
-    name_file = f'jobs_month_{month}.csv'
+    name_file = f'jobs_month_{month:02d}.csv'
     path = os.path.join(output_dir, name_file)
     group = group.sort_values(by=date_column)
     group.to_csv(path, index=False)
