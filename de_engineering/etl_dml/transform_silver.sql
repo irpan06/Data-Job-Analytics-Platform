@@ -90,7 +90,7 @@ FROM src_bronze.raw_data b
 LEFT JOIN wh_silver.dim_company c 
 ON b.company_name = c.company_name
 LEFT JOIN wh_silver.dim_date d
-ON b.job_posted_date = d.job_posted_date
+ON toDate(b.job_posted_date) = d.full_date
 WHERE b.job_hash NOT IN (
     SELECT job_hash
     FROM wh_silver.fact_job_postings
