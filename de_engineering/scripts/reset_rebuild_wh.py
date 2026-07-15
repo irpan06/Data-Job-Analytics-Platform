@@ -32,6 +32,7 @@ ch_client = clickhouse_connect.get_client(
     password=os.getenv("CLICKHOUSE_PASSWORD"),
 )
 
+# Fungsi untuk menjalankan file SQL eksternal (biarkan jika masih digunakan untuk file lain)
 def run_clickhouse(sql_file):
     print(f"Running {sql_file.name}")
     sql = sql_file.read_text(encoding="utf-8")
@@ -41,11 +42,19 @@ def run_clickhouse(sql_file):
         if query:
             ch_client.command(query)
 
+# --- FUNGSI BARU UNTUK RESET ---
+def reset_clickhouse():
+    databases = ["src_bronze", "wh_silver", "mart_gold"]
+    
+    for db in databases:
+        query = f"DROP DATABASE IF EXISTS {db}"
+        print(f"dropping: {db}")
+        ch_client.command(query)
+
 def main():
-    print("========== RESETTING WAREHOUSE ==========")
-    run_clickhouse(DDL_DIR / "clickhouse_reset.sql")
+    print("resetting warehoue...")
     print()
-    print("REBUILDING WAREHOUSE...")
+    reset_clickhouse()
     print()
     build_warehouse.main()
 

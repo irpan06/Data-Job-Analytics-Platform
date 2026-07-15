@@ -42,7 +42,7 @@ def run_clickhouse(sql_file):
             ch_client.command(query)
 
 def execute_sql_file(client, sql_file: Path, config: dict):
-    print(f"Running {sql_file.name}")
+    sql_file = etl_dir / sql_file
     sql = sql_file.read_text(encoding="utf-8")
     sql = sql.format(**config)
     queries = sql.split(";")
@@ -52,21 +52,15 @@ def execute_sql_file(client, sql_file: Path, config: dict):
             client.command(query)
 
 def main():
-    sql_files = [
-        etl_dir / "load_bronze.sql",
-        etl_dir / "transform_silver.sql",
-        etl_dir / "aggregation_gold.sql",
-    ]
-    print("=" * 60)
-    print("RUNNING ETL PIPELINE")
-    print("=" * 60)
+    sql_files = ["load_bronze.sql","transform_silver.sql","aggregation_gold.sql"]
+
     try:
         for sql_file in sql_files:
+            print(f'executing: {sql_file}')
             execute_sql_file(ch_client, sql_file, CONFIG)
-        print("\nETL Pipeline completed successfully!")
+        print("\nETL pipeline completed successfully!")
     finally:
         ch_client.close()
-
 
 if __name__ == "__main__":
     main()

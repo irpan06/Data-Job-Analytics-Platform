@@ -39,7 +39,7 @@ def run_postgres(sql_file):
         cur.execute(sql)
 
 def run_clickhouse(sql_file):
-    print(f"Running {sql_file.name}")
+    print(f"executing: {sql_file.name}")
     sql = sql_file.read_text(encoding="utf-8")
     queries = sql.split(";")
     for query in queries:
@@ -48,12 +48,14 @@ def run_clickhouse(sql_file):
             ch_client.command(query)
 
 def main():
-    print("========== BUILD CLICKHOUSE ==========")
+    print("building clickhouse warehouse...")
+    print()
     run_clickhouse(DDL_DIR / "clickhouse_bronze.sql")
     run_clickhouse(DDL_DIR / "clickhouse_silver.sql")
     run_clickhouse(DDL_DIR / "clickhouse_gold.sql")
     print()
-    print("Warehouse successfully created!")
+    print("warehouse successfully created!")
+    print()
 
 if __name__ == "__main__":
     main()
