@@ -3,3 +3,5 @@
 requirements.txt
 dataset
 notes.txt
+logs
+.gitignore

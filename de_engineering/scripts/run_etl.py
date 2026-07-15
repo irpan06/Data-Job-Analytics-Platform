@@ -1,5 +1,7 @@
 import os
 import glob
+import logging
+from time import perf_counter
 import clickhouse_connect
 from pathlib import Path
 from dotenv import load_dotenv
@@ -10,6 +12,21 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 
 etl_path = Path(__file__).resolve().parents[1]
 etl_dir = etl_path / 'etl_dml'
+
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(LOG_DIR / "pipeline.log"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 # env
 load_dotenv(BASE_DIR / ".env")
@@ -33,7 +50,7 @@ ch_client = clickhouse_connect.get_client(
 )
 
 def run_clickhouse(sql_file):
-    print(f"Running {sql_file.name}")
+    logger.info(f"running {sql_file.name}")
     sql = sql_file.read_text(encoding="utf-8")
     queries = sql.split(";")
     for query in queries:
@@ -51,15 +68,157 @@ def execute_sql_file(client, sql_file: Path, config: dict):
         if query:
             client.command(query)
 
+def get_row_count(client, table_name):
+    result = client.query(
+        f"SELECT COUNT() AS total_rows FROM {table_name}"
+    )
+
+    return result.result_rows[0][0]
+
+# def main():
+#     sql_files = ["load_bronze.sql","transform_silver.sql","aggregation_gold.sql"]
+
+#     try:
+#         for sql_file in sql_files:
+#             logger.info(f'executing: {sql_file}')
+#             execute_sql_file(ch_client, sql_file, CONFIG)
+#         logger.info("\nETL pipeline completed successfully!")
+#     finally:
+#         ch_client.close()
+
 def main():
-    sql_files = ["load_bronze.sql","transform_silver.sql","aggregation_gold.sql"]
+
+    total_start = perf_counter()
+
+    logger.info('')
+    logger.info("=" * 60)
+    logger.info("                   DATA WAREHOUSE ETL PIPELINE")
+    logger.info("=" * 60)
 
     try:
-        for sql_file in sql_files:
-            print(f'executing: {sql_file}')
-            execute_sql_file(ch_client, sql_file, CONFIG)
-        print("\nETL pipeline completed successfully!")
+
+        logger.info('')
+        logger.info('Bronze')
+        logger.info("-"*60)
+
+        start = perf_counter()
+
+        logger.info("Running load_bronze.sql")
+
+        execute_sql_file(ch_client, "load_bronze.sql", CONFIG)
+
+        bronze_rows = get_row_count(
+            ch_client,
+            "src_bronze.raw_data"
+        )
+
+        logger.info(f"Bronze rows : {bronze_rows}")   
+
+        logger.info(f"Duration    : {perf_counter()-start:.2f} sec"
+        )
+
+        if bronze_rows == 0:
+            raise RuntimeError(
+                "Bronze table contains 0 rows."
+            )
+
+        logger.info('')
+        logger.info('Silver')
+        logger.info("-"*60)
+
+        start = perf_counter()
+
+        logger.info("Running transform_silver.sql")
+
+        execute_sql_file(
+            ch_client,
+            "transform_silver.sql",
+            CONFIG
+        )
+
+        fact = get_row_count(
+            ch_client,
+            "wh_silver.fact_job_postings"
+        )
+        
+        ddate = get_row_count(
+            ch_client,
+            "wh_silver.dim_date"
+        )
+
+        company = get_row_count(
+            ch_client,
+            "wh_silver.dim_company"
+        )
+
+        skill = get_row_count(
+            ch_client,
+            "wh_silver.dim_skill"
+        )
+
+        bridge = get_row_count(
+            ch_client,
+            "wh_silver.bridge_skill_job"
+        )
+
+        logger.info(f"Fact Job     : {fact}")
+        logger.info(f"Dim Company  : {company}")
+        logger.info(f"Dim Skill    : {skill}")
+        logger.info(f"Dim Date     : {ddate}")
+        logger.info(f"Bridge       : {bridge}")
+
+        logger.info(f"Duration     : {perf_counter()-start:.2f} sec"
+        )
+
+        logger.info('')
+        logger.info('Gold')
+        logger.info("-"*60)
+
+        start = perf_counter()
+
+        logger.info("Running aggregation_gold.sql")
+
+        execute_sql_file(
+            ch_client,
+            "aggregation_gold.sql",
+            CONFIG
+        )
+
+        salary = get_row_count(
+            ch_client,
+            "mart_gold.agg_salary_by_role"
+        )
+
+        demand = get_row_count(
+            ch_client,
+            "mart_gold.agg_skill_demand_monthly"
+        )
+
+        top = get_row_count(
+            ch_client,
+            "mart_gold.agg_top_paying_skills"
+        )
+
+        logger.info(f"Salary Mart   : {salary}")
+        logger.info(f"Skill Demand  : {demand}")
+        logger.info(f"Top Paying    : {top}")
+
+        logger.info(f"Duration      : {perf_counter()-start:.2f} sec"
+        )
+        logger.info('')
+
+        logger.info("=" * 60)
+        logger.info(
+            f"          Pipeline completed in {perf_counter()-total_start:.2f} sec"
+        )
+        logger.info("=" * 60)
+
+    except Exception as e:
+
+        logger.exception(f"Pipeline failed!: {e}")
+
     finally:
+
         ch_client.close()
 
 if __name__ == "__main__":
