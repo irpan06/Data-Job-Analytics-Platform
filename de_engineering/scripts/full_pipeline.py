@@ -7,7 +7,6 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 scripts_dir = Path(__file__).resolve().parents[0]
 scripts = [
     scripts_dir / "build_warehouse.py",
-    scripts_dir / "ingest_to_postgres.py",
     scripts_dir / "run_etl.py",
 ]
 

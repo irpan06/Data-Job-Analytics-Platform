@@ -32,13 +32,6 @@ ch_client = clickhouse_connect.get_client(
     password=os.getenv("CLICKHOUSE_PASSWORD"),
 )
 
-# run sql file
-def run_postgres(sql_file):
-    print(f"Running {sql_file.name}")
-    with pg_conn.cursor() as cur:
-        sql = sql_file.read_text(encoding="utf-8")
-        cur.execute(sql)
-
 def run_clickhouse(sql_file):
     print(f"Running {sql_file.name}")
     sql = sql_file.read_text(encoding="utf-8")
@@ -49,15 +42,12 @@ def run_clickhouse(sql_file):
             ch_client.command(query)
 
 def main():
-    print("========== RESETTING POSTGRES ==========")
-    run_postgres(DDL_DIR / "postgres_reset.sql")
-    print()
-    print("========== RESETTING CLICKHOUSE ==========")
+    print("========== RESETTING WAREHOUSE ==========")
     run_clickhouse(DDL_DIR / "clickhouse_reset.sql")
     print()
     print("REBUILDING WAREHOUSE...")
     print()
-    # build_warehouse.main()
+    build_warehouse.main()
 
 if __name__ == "__main__":
     main()

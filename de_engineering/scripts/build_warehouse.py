@@ -48,9 +48,6 @@ def run_clickhouse(sql_file):
             ch_client.command(query)
 
 def main():
-    print("========== BUILD POSTGRES ==========")
-    run_postgres(DDL_DIR / "postgres_staging.sql")
-    print()
     print("========== BUILD CLICKHOUSE ==========")
     run_clickhouse(DDL_DIR / "clickhouse_bronze.sql")
     run_clickhouse(DDL_DIR / "clickhouse_silver.sql")
