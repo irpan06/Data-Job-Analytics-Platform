@@ -8,6 +8,7 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
     url  = 'https://storage.googleapis.com/sql_de/job_postings_flat.csv'
     print('read csv file ...')
+    print()
     df = pd.read_csv(url)
     date_column = "job_posted_date"
     df[date_column] = pd.to_datetime(df[date_column])
@@ -18,6 +19,7 @@ def main():
         group = group.sort_values(by=date_column)
         group.to_csv(path, index=False)
         print(f'success: {name_file}')
+    print()
 
 if __name__ == '__main__':
     main()
