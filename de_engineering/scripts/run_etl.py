@@ -72,19 +72,8 @@ def get_row_count(client, table_name):
     result = client.query(
         f"SELECT COUNT() AS total_rows FROM {table_name}"
     )
-
     return result.result_rows[0][0]
 
-# def main():
-#     sql_files = ["load_bronze.sql","transform_silver.sql","aggregation_gold.sql"]
-
-#     try:
-#         for sql_file in sql_files:
-#             logger.info(f'executing: {sql_file}')
-#             execute_sql_file(ch_client, sql_file, CONFIG)
-#         logger.info("\nETL pipeline completed successfully!")
-#     finally:
-#         ch_client.close()
 
 def main():
 
@@ -96,13 +85,11 @@ def main():
     logger.info("=" * 60)
 
     try:
-
         logger.info('')
         logger.info('Bronze')
         logger.info("-"*60)
 
         start = perf_counter()
-
         logger.info("Running load_bronze.sql")
 
         execute_sql_file(ch_client, "load_bronze.sql", CONFIG)
@@ -113,7 +100,6 @@ def main():
         )
 
         logger.info(f"Bronze rows : {bronze_rows}")   
-
         logger.info(f"Duration    : {perf_counter()-start:.2f} sec"
         )
 
@@ -161,7 +147,7 @@ def main():
             "wh_silver.bridge_skill_job"
         )
 
-        logger.info(f"Fact Job     : {fact}")
+        logger.info(f"Fact Job     : {fact} ")
         logger.info(f"Dim Company  : {company}")
         logger.info(f"Dim Skill    : {skill}")
         logger.info(f"Dim Date     : {ddate}")
@@ -202,23 +188,17 @@ def main():
         logger.info(f"Salary Mart   : {salary}")
         logger.info(f"Skill Demand  : {demand}")
         logger.info(f"Top Paying    : {top}")
-
-        logger.info(f"Duration      : {perf_counter()-start:.2f} sec"
-        )
+        logger.info(f"Duration      : {perf_counter()-start:.2f} sec")
         logger.info('')
 
         logger.info("=" * 60)
-        logger.info(
-            f"          Pipeline completed in {perf_counter()-total_start:.2f} sec"
-        )
+        logger.info(f"Pipeline completed in {perf_counter()-total_start:.2f} sec")
         logger.info("=" * 60)
 
     except Exception as e:
-
         logger.exception(f"Pipeline failed!: {e}")
 
     finally:
-
         ch_client.close()
 
 if __name__ == "__main__":
