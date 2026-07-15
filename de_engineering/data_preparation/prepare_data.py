@@ -22,7 +22,7 @@ def main():
     ingest_data()
 
     print("=" * 60)
-    print("         Source data preparation completed successfully!")
+    print("Source data preparation completed successfully!")
     print("=" * 60)
     print()
 
