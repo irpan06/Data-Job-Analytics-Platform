@@ -14,11 +14,6 @@ _The project demonstrates the complete data lifecycle, from data ingestion and w
 - Produce business insights through dashboards.
 
 ## Project Sections
-The project is divided into two major sections:
-
-- Data Engineering focuses on building a reliable and scalable data platform.
-- Data Analytics focuses on transforming curated data into actionable business insights. (Currently under development.)
-
 
 ```text
 Project
@@ -36,6 +31,9 @@ Project
     ├── Insights
     └── Recommendations
 ```
+The project is divided into two major sections:
+- Data Engineering focuses on building a reliable and scalable data platform.
+- Data Analytics focuses on transforming curated data into actionable business insights. (under development.)
 
 ## Repository Structure
 ```text
