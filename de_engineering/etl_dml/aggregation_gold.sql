@@ -10,9 +10,9 @@ SELECT
     AVG(salary_year_avg) AS avg_salary_year,
     AVG(salary_hour_avg) AS avg_salary_hour
 FROM wh_silver.fact_job_postings
-GROUP BY job_title_short
 WHERE job_title_short IS NOT NULL
-  AND job_title_short != '';
+  AND job_title_short != ''
+GROUP BY job_title_short;
 
 -- aggregation skill demand monthly table
 TRUNCATE TABLE mart_gold.agg_skill_demand_monthly;
@@ -34,8 +34,8 @@ ON f.job_id = b.job_id
 INNER JOIN wh_silver.dim_skill s
 ON b.skill_id = s.skill_id
 
-WHERE job_title_short IS NOT NULL 
- AND job_title_short != ''
+WHERE job_title_short IS NOT NULL
+  AND job_title_short != ''
 
 GROUP BY
     d.year,
