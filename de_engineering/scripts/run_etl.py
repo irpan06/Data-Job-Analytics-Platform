@@ -5,7 +5,6 @@ from time import perf_counter
 import clickhouse_connect
 from pathlib import Path
 from dotenv import load_dotenv
-from build_warehouse import run_clickhouse 
 
 # path
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -75,8 +74,119 @@ def get_row_count(client, table_name):
     return result.result_rows[0][0]
 
 
-def main():
+# --- REFACTORED FUNCTIONS ---
 
+def load_bronze():
+    logger.info('')
+    logger.info('Bronze')
+    logger.info("-" * 60)
+
+    start = perf_counter()
+    logger.info("Running load_bronze.sql")
+
+    execute_sql_file(ch_client, "load_bronze.sql", CONFIG)
+
+    bronze_rows = get_row_count(
+        ch_client,
+        "src_bronze.raw_data"
+    )
+
+    logger.info(f"Bronze rows : {bronze_rows}")
+    logger.info('')   
+    logger.info(f"Duration    : {perf_counter()-start:.2f} sec")
+
+    if bronze_rows == 0:
+        raise RuntimeError(
+            "Bronze table contains 0 rows."
+        )
+
+def transform_silver():
+    logger.info('')
+    logger.info('Silver')
+    logger.info("-" * 60)
+
+    start = perf_counter()
+
+    logger.info("Running transform_silver.sql")
+
+    execute_sql_file(
+        ch_client,
+        "transform_silver.sql",
+        CONFIG
+    )
+
+    fact = get_row_count(
+        ch_client,
+        "wh_silver.fact_job_postings"
+    )
+    
+    ddate = get_row_count(
+        ch_client,
+        "wh_silver.dim_date"
+    )
+
+    company = get_row_count(
+        ch_client,
+        "wh_silver.dim_company"
+    )
+
+    skill = get_row_count(
+        ch_client,
+        "wh_silver.dim_skill"
+    )
+
+    bridge = get_row_count(
+        ch_client,
+        "wh_silver.bridge_skill_job"
+    )
+
+    logger.info(f"Fact Job     : {fact} ")
+    logger.info(f"Dim Company  : {company}")
+    logger.info(f"Dim Skill    : {skill}")
+    logger.info(f"Dim Date     : {ddate}")
+    logger.info(f"Bridge       : {bridge}")
+    logger.info('')
+    logger.info(f"Duration     : {perf_counter()-start:.2f} sec")
+
+def build_gold():
+    logger.info('')
+    logger.info('Gold')
+    logger.info("-" * 60)
+
+    start = perf_counter()
+
+    logger.info("Running aggregation_gold.sql")
+
+    execute_sql_file(
+        ch_client,
+        "aggregation_gold.sql",
+        CONFIG
+    )
+
+    salary = get_row_count(
+        ch_client,
+        "mart_gold.agg_salary_by_role"
+    )
+
+    demand = get_row_count(
+        ch_client,
+        "mart_gold.agg_skill_demand_monthly"
+    )
+
+    top = get_row_count(
+        ch_client,
+        "mart_gold.agg_top_paying_skills"
+    )
+
+    logger.info(f"Salary Mart   : {salary}")
+    logger.info(f"Skill Demand  : {demand}")
+    logger.info(f"Top Paying    : {top}")
+    logger.info('')
+    logger.info(f"Duration      : {perf_counter()-start:.2f} sec")
+    logger.info('')
+
+
+def main():
     total_start = perf_counter()
 
     logger.info('')
@@ -85,111 +195,9 @@ def main():
     logger.info("=" * 60)
 
     try:
-        logger.info('')
-        logger.info('Bronze')
-        logger.info("-"*60)
-
-        start = perf_counter()
-        logger.info("Running load_bronze.sql")
-
-        execute_sql_file(ch_client, "load_bronze.sql", CONFIG)
-
-        bronze_rows = get_row_count(
-            ch_client,
-            "src_bronze.raw_data"
-        )
-
-        logger.info(f"Bronze rows : {bronze_rows}")   
-        logger.info(f"Duration    : {perf_counter()-start:.2f} sec"
-        )
-
-        if bronze_rows == 0:
-            raise RuntimeError(
-                "Bronze table contains 0 rows."
-            )
-
-        logger.info('')
-        logger.info('Silver')
-        logger.info("-"*60)
-
-        start = perf_counter()
-
-        logger.info("Running transform_silver.sql")
-
-        execute_sql_file(
-            ch_client,
-            "transform_silver.sql",
-            CONFIG
-        )
-
-        fact = get_row_count(
-            ch_client,
-            "wh_silver.fact_job_postings"
-        )
-        
-        ddate = get_row_count(
-            ch_client,
-            "wh_silver.dim_date"
-        )
-
-        company = get_row_count(
-            ch_client,
-            "wh_silver.dim_company"
-        )
-
-        skill = get_row_count(
-            ch_client,
-            "wh_silver.dim_skill"
-        )
-
-        bridge = get_row_count(
-            ch_client,
-            "wh_silver.bridge_skill_job"
-        )
-
-        logger.info(f"Fact Job     : {fact} ")
-        logger.info(f"Dim Company  : {company}")
-        logger.info(f"Dim Skill    : {skill}")
-        logger.info(f"Dim Date     : {ddate}")
-        logger.info(f"Bridge       : {bridge}")
-
-        logger.info(f"Duration     : {perf_counter()-start:.2f} sec"
-        )
-
-        logger.info('')
-        logger.info('Gold')
-        logger.info("-"*60)
-
-        start = perf_counter()
-
-        logger.info("Running aggregation_gold.sql")
-
-        execute_sql_file(
-            ch_client,
-            "aggregation_gold.sql",
-            CONFIG
-        )
-
-        salary = get_row_count(
-            ch_client,
-            "mart_gold.agg_salary_by_role"
-        )
-
-        demand = get_row_count(
-            ch_client,
-            "mart_gold.agg_skill_demand_monthly"
-        )
-
-        top = get_row_count(
-            ch_client,
-            "mart_gold.agg_top_paying_skills"
-        )
-
-        logger.info(f"Salary Mart   : {salary}")
-        logger.info(f"Skill Demand  : {demand}")
-        logger.info(f"Top Paying    : {top}")
-        logger.info(f"Duration      : {perf_counter()-start:.2f} sec")
-        logger.info('')
+        load_bronze()
+        transform_silver()
+        build_gold()
 
         logger.info("=" * 60)
         logger.info(f"Pipeline completed in {perf_counter()-total_start:.2f} sec")

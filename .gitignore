@@ -4,4 +4,6 @@ requirements.txt
 dataset
 notes.txt
 logs
-.gitignore
+airflow
+de_engineering/scripts/__init__.py
+de_engineering/__init__.py
