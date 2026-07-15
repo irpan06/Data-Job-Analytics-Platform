@@ -32,42 +32,38 @@ ch_client = clickhouse_connect.get_client(
     password=os.getenv("CLICKHOUSE_PASSWORD"),
 )
 
+def run_clickhouse(sql_file):
+    print(f"Running {sql_file.name}")
+    sql = sql_file.read_text(encoding="utf-8")
+    queries = sql.split(";")
+    for query in queries:
+        query = query.strip()
+        if query:
+            ch_client.command(query)
+
 def execute_sql_file(client, sql_file: Path, config: dict):
     print(f"Running {sql_file.name}")
-
     sql = sql_file.read_text(encoding="utf-8")
-
-    # replace placeholder dari .env
     sql = sql.format(**config)
-
-    # pisahkan multiple statement
-    queries = [
-        q.strip()
-        for q in sql.split(";")
-        if q.strip() and not q.strip().startswith("--")
-    ]
-
+    queries = sql.split(";")
     for query in queries:
-        client.command(query)
+        query = query.strip()
+        if query:
+            client.command(query)
 
 def main():
-
     sql_files = [
         etl_dir / "load_bronze.sql",
         etl_dir / "transform_silver.sql",
         etl_dir / "aggregation_gold.sql",
     ]
-
     print("=" * 60)
     print("RUNNING ETL PIPELINE")
     print("=" * 60)
-
     try:
         for sql_file in sql_files:
             execute_sql_file(ch_client, sql_file, CONFIG)
-
         print("\nETL Pipeline completed successfully!")
-
     finally:
         ch_client.close()
 

@@ -57,7 +57,7 @@ def main():
     print()
     print("REBUILDING WAREHOUSE...")
     print()
-    build_warehouse.main()
+    # build_warehouse.main()
 
 if __name__ == "__main__":
     main()
