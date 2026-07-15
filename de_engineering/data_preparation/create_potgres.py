@@ -21,8 +21,7 @@ def main():
     cursor = pg_conn.cursor()
 
     try:
-        print("Creating PostgreSQL table...")
-
+        print("creating PostgreSQL table...")
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS job_postings (
                 job_title_short TEXT,
@@ -53,10 +52,12 @@ def main():
 
         pg_conn.commit()
         print("PostgreSQL table created successfully.")
+        print()
 
     except Exception as e:
         pg_conn.rollback()
         print(f"Failed to create PostgreSQL table: {e}")
+        print()
 
     finally:
         cursor.close()
