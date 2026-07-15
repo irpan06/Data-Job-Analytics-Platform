@@ -53,9 +53,11 @@ def main():
             execute_values(cursor, query, list_of_tuples)
             pg_conn.commit()
             print(f'success ingesting {len(df):,} rows into Postgresql')
+            print()
         except Exception as e:
             pg_conn.rollback()
             print(f'failed ingesting for file {os.path.basename(file_path)}: {e}')
+            print()
         finally:
             cursor.close()
     
@@ -66,7 +68,7 @@ def main():
     else:
         for files in csv_files:
             ingest_to_postgres(files)
-    
+    print()
 
 if __name__ == "__main__":
     main()
