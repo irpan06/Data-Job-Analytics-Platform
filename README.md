@@ -1,5 +1,7 @@
 # Data Job Analytics Platform
 
+![Architecture](images/project.drawio.png)
+
 ## Overview
 
 > An end-to-end Data Engineering and Data Analytics project that transforms raw job posting data into a modern analytical data warehouse and provides business insights through interactive dashboards.
