@@ -43,7 +43,11 @@ The project is divided into two major sections:
 ```text
 Data Job Analytics Platform
 │
-│
+├── airflow
+│   └── airflow_home
+│       ├── dags
+│       └── logs
+|
 ├── dataset
 │   ├── jobs_month_01.csv
 │   ├── jobs_month_02.csv
@@ -53,7 +57,6 @@ Data Job Analytics Platform
 ├── da_analytics   
 │   
 ├── de_engineering
-|   |
 │   ├── data_preparation
 │   ├── etl_dml
 │   ├── scripts
