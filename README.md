@@ -4,9 +4,9 @@
 
 ## Overview
 
-> An end-to-end Data Engineering and Data Analytics project that transforms raw job posting data into a modern analytical data warehouse and provides business insights through interactive dashboards.
+> _An end-to-end Data Engineering and Data Analytics project that transforms raw job posting data into a modern analytical data warehouse and provides business insights through interactive dashboards_.
 
-_The project demonstrates the complete data lifecycle, from data ingestion and warehouse development to analytical reporting and visualization._
+The project demonstrates the complete data lifecycle, from data ingestion and warehouse development to analytical reporting and visualization.
 
 ## Objectives
 - Build an end-to-end data pipeline.
@@ -41,30 +41,30 @@ The project is divided into two major sections:
 
 ## Repository Structure
 ```text
-Data Job Analytics Platform
+Data-Job-Analytics-Platform/
 │
-├── airflow
-│   └── airflow_home
-│       ├── dags
-│       └── logs
-|
-├── dataset
-│   ├── jobs_month_01.csv
-│   ├── jobs_month_02.csv
-│   ├── jobs_month_03.csv
-│   └──   ...
+├── airflow/                     # Apache Airflow configuration and orchestration
+│   └── airflow_home/
+│       ├── dags/                # DAG definitions for scheduling ETL workflows
+│       └── logs/                # Airflow execution logs
 │
-├── da_analytics   
-│   
-├── de_engineering
-│   ├── data_preparation
-│   ├── etl_dml
-│   ├── scripts
-│   └── setup_ddl
+├── dataset/                     # Monthly raw job posting datasets (CSV)
+│   ├── jobs_month_01.csv
+│   ├── jobs_month_02.csv
+│   ├── jobs_month_03.csv
+│   └── ...
 │
-├── logs
+├── da_analytics/                # Data analytics, dashboards, and business insights (coming soon)
 │
-├── README.md
+├── de_engineering/              # Data engineering pipeline implementation
+│   ├── data_preparation/        # Source data preparation and PostgreSQL ingestion
+│   ├── setup_ddl/               # Database and warehouse DDL scripts
+│   ├── etl_dml/                 # SQL transformations for Bronze, Silver, and Gold layers
+│   └── scripts/                 # Python scripts for ETL orchestration and automation
 │
-└── requirements.txt
+├── logs/                        # Pipeline execution logs
+│
+├── README.md                    # Project documentation
+│
+└── requirements.txt             # Python project dependencies
 ```
