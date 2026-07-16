@@ -1,6 +1,6 @@
 # Data Job Analytics Platform
 
-![Architecture](images/project.drawio.png)
+![Architecture](images/architecture.png)
 
 ## Overview
 
