@@ -1,6 +1,6 @@
 # Data Job Analytics Platform
 
-![Architecture](images/architecture.png)
+![Architecture](images/1.png)
 
 ## Overview
 
