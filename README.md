@@ -1,21 +1,20 @@
 # Data Job Analytics Platform
 
-## Project Overview
+## Overview
 
 > An end-to-end Data Engineering and Data Analytics project that transforms raw job posting data into a modern analytical data warehouse and provides business insights through interactive dashboards.
 
 _The project demonstrates the complete data lifecycle, from data ingestion and warehouse development to analytical reporting and visualization._
 
-## Project Objectives
+## Objectives
 - Build an end-to-end data pipeline.
 - Design a dimensional data warehouse.
 - Automate ETL workflows.
 - Deliver analytical datasets.
 - Produce business insights through dashboards.
 
-## Project Workflow
 
-## Project Sections
+## Sections
 
 ```text
 Project
