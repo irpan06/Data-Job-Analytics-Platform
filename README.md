@@ -1,6 +1,6 @@
 # Data Job Analytics Platform
 
-![Architecture](images/1.png)
+![Architecture](images/architecture.png)
 
 ## Overview
 
@@ -68,3 +68,15 @@ Data-Job-Analytics-Platform/
 │
 └── requirements.txt             # Python project dependencies
 ```
+
+## Technology Stack
+
+| Category               | Technology     | Purpose                                                                                          |
+| ---------------------- | -------------- | ------------------------------------------------------------------------------------------------ |
+| Programming Language   | Python         | Automates data preparation, ETL orchestration, and utility scripts.                              |
+| Source Database        | PostgreSQL     | Stores raw job posting data as the operational data source.                                      |
+| Data Warehouse         | ClickHouse     | Serves as the analytical data warehouse using the Medallion Architecture (Bronze, Silver, Gold). |
+| Query Language         | SQL            | Defines warehouse schema and performs data transformation.                                       |
+| Workflow Orchestration | Apache Airflow | Schedules and orchestrates ETL workflows.                                                        |
+| Data Modeling          | Star Schema    | Organizes analytical data into fact and dimension tables.                                        |
+| Version Control        | Git & GitHub   | Tracks source code changes and manages project collaboration.                                    |
