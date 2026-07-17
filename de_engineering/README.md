@@ -8,6 +8,15 @@
 
 The data engineering pipeline adopts the **Medallion Architecture** to progressively transform raw operational data into business-ready datasets. Raw data is first loaded into the Bronze layer, refined into analytical tables in the Silver layer, and finally aggregated into Gold data marts for reporting and analytics.
 
+
+| Layer | Purpose |
+|--------|---------|
+| Bronze | Store raw operational data |
+| Silver | Clean, standardize, and model analytical data |
+| Gold | Store aggregated data marts for reporting |
+
+
+
 ## Directory Structure
 The **de_engineering** module contains all components required to build the data engineering pipeline, from source data preparation to data warehouse creation and ETL execution.
 ```text
@@ -38,6 +47,15 @@ de_engineering
     ├── clickhouse_reset.sql
     └── clickhouse_silver.sql
 ```
+## Data Modelling
+
+![data_model](/images/data_model.png)
+
+The Silver layer adopts a **Star Schema** to optimize analytical queries. A centralized fact table stores job posting transactions, while dimension tables provide descriptive attributes such as company, date, and skills.
+
+This design improves query performance, simplifies analytical workloads, and provides the foundation for the Gold data marts.
+
+
 ### Directory Description
 
 | Directory | Description |
