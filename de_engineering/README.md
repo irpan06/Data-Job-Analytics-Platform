@@ -15,6 +15,13 @@ The data engineering pipeline adopts the **Medallion Architecture** to progressi
 | Silver | Clean, standardize, and model analytical data |
 | Gold | Store aggregated data marts for reporting |
 
+## Data Modelling
+
+![data_model](/images/data_model.png)
+
+The Silver layer adopts a **Star Schema** to optimize analytical queries. A centralized fact table stores job posting transactions, while dimension tables provide descriptive attributes such as company, date, and skills.
+
+This design improves query performance, simplifies analytical workloads, and provides the foundation for the Gold data marts.
 
 
 ## Directory Structure
@@ -47,13 +54,6 @@ de_engineering
     ├── clickhouse_reset.sql
     └── clickhouse_silver.sql
 ```
-## Data Modelling
-
-![data_model](/images/data_model.png)
-
-The Silver layer adopts a **Star Schema** to optimize analytical queries. A centralized fact table stores job posting transactions, while dimension tables provide descriptive attributes such as company, date, and skills.
-
-This design improves query performance, simplifies analytical workloads, and provides the foundation for the Gold data marts.
 
 
 ### Directory Description
