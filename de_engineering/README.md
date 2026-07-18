@@ -14,7 +14,17 @@ This project utilizes a comprehensive job posting dataset originally scraped and
 
 While the source dataset provided the foundational raw data, **the engineering pipeline, warehouse architecture, and analytical models in this repository have been independently designed and implemented**. 
 
+While the foundational dataset and core Star Schema modeling concept (Fact, Company Dim, Skill Dim, and Bridge Table) were adapted from his tutorial, **the overall data architecture and ETL pipeline have been significantly extended and re-engineered for OLAP performance and production readiness.**
+
+### Key Engineering Extensions & Modifications
+To elevate the project from a local tutorial implementation to a production-grade data platform, several key enhancements were introduced:
+* **Engine Migration (DuckDB ➔ ClickHouse):** Replaced file-based local storage with **ClickHouse**, a high-performance columnar OLAP data warehouse.
+* **Medallion Architecture:** Expanded the direct transformation into a layered data pipeline (Bronze ➔ Silver ➔ Gold) with pre-aggregated business data marts.
+* **Schema & Deduplication Enhancement:** Introduced a calendar dimension (`dim_date`) for time-series analytics and implemented a 64-bit integer hash (`job_hash`) in the Bronze layer for high-speed deduplication.
+* **Production Orchestration & Observability:** Integrated dual-channel Python logging, automated row-count validation, and workflow orchestration via **Apache Airflow**.
+
 > 🙏 **Credit:** Special thanks to [Luke Barousse](https://www.youtube.com/@LukeBarousse) for making the raw dataset publicly available to the data community.
+
 
 ## Architecture
 ![architecture](/images/architecture.png)
