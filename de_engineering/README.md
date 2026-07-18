@@ -12,8 +12,6 @@
 
 This project utilizes a comprehensive job posting dataset originally scraped and curated by **Luke Barousse** for his [Data Engineering course](https://github.com/lukebarousse/SQL_Data_Engineering_Course). 
 
-While the source dataset provided the foundational raw data, **the engineering pipeline, warehouse architecture, and analytical models in this repository have been independently designed and implemented**. 
-
 While the foundational dataset and core Star Schema modeling concept (Fact, Company Dim, Skill Dim, and Bridge Table) were adapted from his tutorial, **the overall data architecture and ETL pipeline have been significantly extended and re-engineered for OLAP performance and production readiness.**
 
 ### Key Engineering Extensions & Modifications
