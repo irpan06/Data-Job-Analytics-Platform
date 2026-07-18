@@ -10,11 +10,11 @@
 
 ## Dataset & Acknowledgments
 
-This project utilizes a comprehensive job posting dataset originally scraped and curated by **Luke Barousse** for his Data Engineering course. 
+This project utilizes a comprehensive job posting dataset originally scraped and curated by **Luke Barousse** for his [Data Engineering course](https://github.com/lukebarousse/SQL_Data_Engineering_Course). 
 
 While the source dataset provided the foundational raw data, **the engineering pipeline, warehouse architecture, and analytical models in this repository have been independently designed and implemented**. 
 
-> 🙏 **Credit:** Special thanks to [Luke Barousse](https://www.youtube/@LukeBarousse) for making the raw dataset publicly available to the data community.
+> 🙏 **Credit:** Special thanks to [Luke Barousse](https://www.youtube.com/@LukeBarousse) for making the raw dataset publicly available to the data community.
 
 ## Architecture
 ![architecture](/images/architecture.png)
