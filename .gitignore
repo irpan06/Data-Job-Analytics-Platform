@@ -1,10 +1,3 @@
 .venv
 .env
-requirements.txt
-dataset
-notes.txt
-logs
-airflow
-de_engineering/scripts/__init__.py
-de_engineering/__init__.py
-project.drawio
+archived

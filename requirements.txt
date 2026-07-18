@@ -1,0 +1,8 @@
+clickhouse-connect==1.4.2
+dotenv==0.9.9
+numpy==2.5.1
+pandas==3.0.3
+psycopg2-binary==2.9.12
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+python-utils==4.0.0
