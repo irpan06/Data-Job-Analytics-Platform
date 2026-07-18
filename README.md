@@ -35,7 +35,7 @@ Project
     └── Recommendations
 ```
 The project is divided into two major sections:
-- Data Engineering focuses on building a reliable and scalable data platform.
+- [Data Engineering](/de_engineering/) focuses on building a reliable and scalable data platform.
 - Data Analytics focuses on transforming curated data into actionable business insights. (under development.)
 
 
