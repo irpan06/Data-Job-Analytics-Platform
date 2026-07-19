@@ -48,10 +48,10 @@ This design improves query performance, simplifies analytical workloads, and pro
 
 To ensure optimal query performance, data integrity, and pipeline reliability, several production-grade engineering practices were implemented:
 
-* **Decoupled OLTP & OLAP Architecture:** Established a strict architectural boundary by utilizing **PostgreSQL** purely as a reliable operational staging area for raw CSV ingestion, and **ClickHouse** as the high-performance columnar analytical warehouse[cite: 5, 6]. This isolates write-heavy operational workloads from read-heavy analytical dashboards[cite: 5, 6].
-* **High-Speed OLAP Deduplication & Sorting:** Because scraped datasets lack reliable primary keys, a 64-bit unsigned integer hash (`job_hash` - `UInt64`) is generated in the Bronze layer for instant, memory-efficient deduplication[cite: 3]. Furthermore, ClickHouse tables leverage `MergeTree` engines with query-driven sorting keys (e.g., `ORDER BY (job_title_short, avg_salary_year DESC)` in the Gold layer) to guarantee sub-second dashboard read latency[cite: 4].
-* **Advanced SQL Array Parsing & Star Schema Modeling:** Job skills embedded as flat Python-style strings (`['SQL', 'Python']`) are parsed and exploded dynamically within SQL using ClickHouse's native `replaceRegexpAll`, `splitByChar`, and `arrayJoin()` table functions. This normalized data is structured into a Star Schema with a dedicated **Bridge Table (`wh_silver.bridge_skill_job`)**, cleanly resolving complex Many-to-Many skill relationships without data redundancy[cite: 2].
-* **Production-Grade Observability & Modular Orchestration:** The ETL execution script (`run_etl.py`) incorporates dual-channel logging (`StreamHandler`/`FileHandler`), execution profiling via `perf_counter`, and automated fail-fast row validation that instantly halts execution if landing tables are empty[cite: 9]. The entire pipeline is orchestrated using **Apache Airflow** (`bronze >> silver >> gold`) via modular `PythonOperator` tasks, keeping core processing logic decoupled and independently testable[cite: 10].
+* **Decoupled OLTP & OLAP Architecture:** Established a strict architectural boundary by utilizing **PostgreSQL** purely as a reliable operational staging area for raw CSV ingestion, and **ClickHouse** as the high-performance columnar analytical warehouse. This isolates write-heavy operational workloads from read-heavy analytical dashboards.
+* **High-Speed OLAP Deduplication & Sorting:** Because scraped datasets lack reliable primary keys, a 64-bit unsigned integer hash (`job_hash` - `UInt64`) is generated in the Bronze layer for instant, memory-efficient deduplication. Furthermore, ClickHouse tables leverage `MergeTree` engines with query-driven sorting keys (e.g., `ORDER BY (job_title_short, avg_salary_year DESC)` in the Gold layer) to guarantee sub-second dashboard read latency.
+* **Advanced SQL Array Parsing & Star Schema Modeling:** Job skills embedded as flat Python-style strings (`['SQL', 'Python']`) are parsed and exploded dynamically within SQL using ClickHouse's native `replaceRegexpAll`, `splitByChar`, and `arrayJoin()` table functions. This normalized data is structured into a Star Schema with a dedicated **Bridge Table (`wh_silver.bridge_skill_job`)**, cleanly resolving complex Many-to-Many skill relationships without data redundancy.
+* **Production-Grade Observability & Modular Orchestration:** The ETL execution script (`run_etl.py`) incorporates dual-channel logging (`StreamHandler`/`FileHandler`), execution profiling via `perf_counter`, and automated fail-fast row validation that instantly halts execution if landing tables are empty. The entire pipeline is orchestrated using **Apache Airflow** (`bronze >> silver >> gold`) via modular `PythonOperator` tasks, keeping core processing logic decoupled and independently testable.
 
 ## Directory Structure
 The **de_engineering** module contains all components required to build the data engineering pipeline, from source data preparation to data warehouse creation and ETL execution.
@@ -101,12 +101,12 @@ The pipeline relies on modular SQL DDL (Data Definition Language) and DML (Data 
 | Folder | File Name | Target Layer / DB | Purpose & Description |
 | :--- | :--- | :--- | :--- |
 | **`setup_ddl/`** | `clickhouse_bronze.sql` | `src_bronze` | Creates the raw landing database and the `raw_data` table with 64-bit integer hashing (`job_hash`). |
-| | `clickhouse_silver.sql` | `wh_silver` | Creates the Star Schema structure: dimension tables (`dim_company`, `dim_date`, `dim_skill`), the central fact table (`fact_job_postings`), and the bridge table (`bridge_skill_job`)[cite: 2]. |
+| | `clickhouse_silver.sql` | `wh_silver` | Creates the Star Schema structure: dimension tables (`dim_company`, `dim_date`, `dim_skill`), the central fact table (`fact_job_postings`), and the bridge table (`bridge_skill_job`). |
 | | `clickhouse_gold.sql` | `mart_gold` | Creates the pre-aggregated analytical data marts: `agg_salary_by_role`, `agg_skill_demand_monthly`, and `agg_top_paying_skills`. |
 | | `clickhouse_reset.sql` | *All Layers* | Utility script to drop and reset all ClickHouse databases for testing or clean re-runs. |
-| **`etl_dml/`** | `load_bronze.sql` | `src_bronze` | Extracts operational data from PostgreSQL staging and loads it into the ClickHouse Bronze raw table[cite: 6]. |
-| | `transform_silver.sql` | `wh_silver` | Cleanses strings, deduplicates via `job_hash`, parses flat Python skill arrays into individual rows using `arrayJoin()`, and populates the Star Schema[cite: 6, 9]. |
-| | `aggregation_gold.sql` | `mart_gold` | Computes analytical aggregations (e.g., salary distributions and monthly skill demand) and populates the Gold data marts[cite: 6, 9]. |
+| **`etl_dml/`** | `load_bronze.sql` | `src_bronze` | Extracts operational data from PostgreSQL staging and loads it into the ClickHouse Bronze raw table. |
+| | `transform_silver.sql` | `wh_silver` | Cleanses strings, deduplicates via `job_hash`, parses flat Python skill arrays into individual rows using `arrayJoin()`, and populates the Star Schema. |
+| | `aggregation_gold.sql` | `mart_gold` | Computes analytical aggregations (e.g., salary distributions and monthly skill demand) and populates the Gold data marts. |
 
 ## Execution Guide
 
