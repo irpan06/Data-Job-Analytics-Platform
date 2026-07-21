@@ -3,10 +3,13 @@
 ## Overview
 > _This section documents the complete data engineering implementation of the project, covering data preparation, warehouse design, ETL development, orchestration, and monitoring._
 
+
 > **TL;DR for Engineering Reviewers:**
 > * **Decoupled Architecture:** Staged raw CSVs in **PostgreSQL (OLTP)** and modeled analytics in **ClickHouse (OLAP)**.
 > * **Medallion & Star Schema:** Implemented Bronze ➔ Silver ➔ Gold layers with a dedicated **Bridge Table** for many-to-many skill relationships.
 > * **Production Ready:** Optimized with 64-bit integer hashing (`job_hash`), dual-channel Python logging, and automated **Apache Airflow** orchestration.
+
+**Note:** This document details the **Data Engineering** module of the [End-to-End Data Job Analytics Platform](../README.md).
 
 ## Dataset & Acknowledgments
 
@@ -141,9 +144,10 @@ This guide provides step-by-step instructions to initialize the databases, build
 ### Option 1: Standalone CLI Execution (Step-by-Step)
 You can execute the pipeline modularly using the Python scripts provided in the `de_engineering/scripts` directory
 
-#### Step 1: Initialize Operational Staging (PostgreSQL)
-Create the PostgreSQL staging table and ingest the raw CSV datasets into transactional database;
+#### Step 1: Download Dataset & Initialize Operational Staging (PostgreSQL)
+Download the raw CSV datasets, initialize the PostgreSQL staging table, and ingest the batch files into the transactional database:
 ```bash
+python de_engineering/data_preparation/download_dataset.py
 python de_engineering/data_preparation/create_potgres.py
 python de_engineering/data_preparation/ingest_to_postgres.py
 ```
