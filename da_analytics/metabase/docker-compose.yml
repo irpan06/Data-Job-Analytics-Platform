@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase_analytics
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./plugins:/plugins
+      - metabase_internal_data:/metabase.db
+    environment:
+      - MB_PLUGINS_DIR=/plugins
+      - MB_DB_FILE=/metabase.db/metabase.db
+      - JAVA_TIMEZONE=Asia/Jakarta
+    restart: always
+
+volumes:
+  metabase_internal_data:
